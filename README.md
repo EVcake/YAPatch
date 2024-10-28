@@ -13,3 +13,4 @@ Yet Another Patching Tool for Android to load xposed modules
 ## 主要感谢
 - [Pine](https://github.com/canyie/pine)
 - [LSPatch](https://github.com/LSPosed/LSPatch)
+- [Xpatch](https://github.com/WindySha/Xpatch)

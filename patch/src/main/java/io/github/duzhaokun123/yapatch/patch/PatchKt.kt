@@ -9,6 +9,7 @@ import com.google.gson.Gson
 import com.wind.meditor.core.ManifestEditor
 import com.wind.meditor.property.AttributeItem
 import com.wind.meditor.property.ModificationProperty
+import io.github.duzhaokun123.yapatch.patch.utils.ApkSignatureHelper
 import io.github.duzhaokun123.yapatch.patch.utils.Logger
 import io.github.duzhaokun123.yapatch.patch.utils.ManifestParser
 import net.lingala.zip4j.ZipFile
@@ -76,7 +77,9 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
         }
         val appComponentFactory = pair.appComponentFactory
         logger.info("AppComponentFactory: $appComponentFactory")
-        patchManifest(manifestFile.absolutePath, gson.toJson(Metadata(appComponentFactory, modules)))
+        val originalSignature = ApkSignatureHelper.getApkSignInfo(srcApk.absolutePath)
+        logger.info("Original signature: $originalSignature")
+        patchManifest(manifestFile.absolutePath, gson.toJson(Metadata(appComponentFactory, modules, originalSignature)))
         logger.info("Patched AndroidManifest.xml")
 
         logger.info("Adding patch dex")

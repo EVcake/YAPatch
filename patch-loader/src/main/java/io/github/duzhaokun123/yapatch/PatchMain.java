@@ -43,7 +43,7 @@ public class PatchMain {
 
     private static PackageManager pm;
 
-    public static void load() throws PackageManager.NameNotFoundException, JSONException, ClassNotFoundException {
+    public static void load() throws PackageManager.NameNotFoundException, JSONException {
         PineConfig.debug = false;
         PineConfig.debuggable = false;
 
@@ -72,6 +72,8 @@ public class PatchMain {
                 Log.w(TAG, "Original AppComponentFactory not found: " + originalAppComponentFactory);
             }
         }
+
+        SigBypass.doSigBypass(context, 1);
 
         var modules = config.getJSONArray("modules");
         if (modules.length() == 0) {
