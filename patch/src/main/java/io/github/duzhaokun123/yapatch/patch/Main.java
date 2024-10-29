@@ -30,10 +30,14 @@ public class Main {
         @Parameter(names = {"-l", "--sigbypasslv"}, description = "Signature bypass level. 0 (disable), 1 (pm). default 0")
         protected int sigbypassLevel = 0;
 
+        @Parameter(names = {"-v", "--version"}, description = "Print version")
+        protected boolean version = false;
+
         private final JCommander jCommander;
         protected final Logger logger;
 
         public Patch(Logger logger, String... args) {
+            this.logger = logger;
             jCommander =JCommander.newBuilder()
                     .addObject(this)
                     .build();
@@ -44,12 +48,12 @@ public class Main {
                 help = true;
             }
 
+            if (version) return;
+
             if (apkPaths == null || apkPaths.isEmpty()) {
                 logger.error("No apks specified");
                 help = true;
             }
-
-            this.logger = logger;
         }
 
         public void run() {
@@ -59,6 +63,12 @@ public class Main {
 
     public static void main(String[] args) {
         Patch patch = new PatchKt(StdLogger.INSTANCE, args);
+
+        if (patch.version) {
+            System.out.println(Versions.INSTANCE);
+            return;
+        }
+
         if (patch.help) {
             patch.jCommander.usage();
             return;
