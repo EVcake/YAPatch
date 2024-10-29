@@ -18,7 +18,6 @@ import java.util.function.BiConsumer;
 
 import de.robv.android.xposed.XposedHelpers;
 import io.github.duzhaokun123.yapatch.hooks.SigBypass;
-import io.github.duzhaokun123.yapatch.hooks.LoadLibraryHook;
 import io.github.duzhaokun123.yapatch.utils.Utils;
 import top.canyie.pine.Pine;
 import top.canyie.pine.PineConfig;
@@ -52,7 +51,6 @@ public class PatchMain {
 
         SigBypass.doSigBypass(context, config.getInt("sigbypassLevel"));
         var modules = Utils.fromJsonArray(config.getJSONArray("modules"));
-        LoadLibraryHook.hook(context, modules);
 
         if (modules.length == 0) {
             Log.w(TAG, "No module to load");
