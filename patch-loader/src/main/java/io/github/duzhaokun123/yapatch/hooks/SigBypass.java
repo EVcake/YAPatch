@@ -27,6 +27,7 @@ public class SigBypass {
     private static final Map<String, String> signatures = new HashMap<>();
 
     private static void replaceSignature(Context context, PackageInfo packageInfo) {
+        Log.d(TAG, "Checking signature info for `" + packageInfo.packageName + "`");
         boolean hasSignature = (packageInfo.signatures != null && packageInfo.signatures.length != 0) || packageInfo.signingInfo != null;
         if (hasSignature) {
             String packageName = packageInfo.packageName;
@@ -34,11 +35,10 @@ public class SigBypass {
             if (replacement == null && !signatures.containsKey(packageName)) {
                 try {
                     var metaData = context.getPackageManager().getApplicationInfo(packageName, PackageManager.GET_META_DATA).metaData;
-                    String encoded = null;
-                    if (metaData != null) encoded = metaData.getString("yapatch");
-                    if (encoded != null) {
-                        var json = new String(Base64.decode(encoded, Base64.DEFAULT), StandardCharsets.UTF_8);
-                        var patchConfig = new JSONObject(json);
+                    String config = null;
+                    if (metaData != null) config = metaData.getString("yapatch");
+                    if (config != null) {
+                        var patchConfig = new JSONObject(config);
                         replacement = patchConfig.getString("originalSignature");
                     }
                 } catch (PackageManager.NameNotFoundException | JSONException ignored) {
@@ -70,6 +70,7 @@ public class SigBypass {
                 replaceSignature(context, packageInfo);
             }
         });
+        Log.d(TAG, "Hooked PackageParser.generatePackageInfo");
     }
 
     private static void proxyPackageInfoCreator(Context context) {
@@ -87,6 +88,7 @@ public class SigBypass {
                 return originalCreator.newArray(size);
             }
         };
+        Log.d(TAG, "Proxied PackageInfo.CREATOR");
         XposedHelpers.setStaticObjectField(PackageInfo.class, "CREATOR", proxiedCreator);
         try {
             Map<?, ?> mCreators = (Map<?, ?>) XposedHelpers.getStaticObjectField(Parcel.class, "mCreators");
@@ -105,6 +107,7 @@ public class SigBypass {
     }
 
     public static void doSigBypass(Context context, int sigBypassLevel) {
+        Log.d(TAG, "SigBypass level: " + sigBypassLevel);
         if (sigBypassLevel >= 1) {
             hookPackageParser(context);
             proxyPackageInfoCreator(context);
