@@ -13,6 +13,7 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -128,7 +129,8 @@ public class PatchMain {
         }
 
         var modulePath = moduleInfo.sourceDir;
-        PineXposed.loadModule(modulePath);
+        var librarySearchPath = modulePath + "!/lib/arm64-v8a";
+        PineXposed.loadModule(new File(modulePath), librarySearchPath, false);
         Log.d(TAG, "Module loaded: " + module);
     }
 }
