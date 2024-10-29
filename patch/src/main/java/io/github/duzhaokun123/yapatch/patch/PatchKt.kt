@@ -79,7 +79,8 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
         logger.info("AppComponentFactory: $appComponentFactory")
         val originalSignature = ApkSignatureHelper.getApkSignInfo(srcApk.absolutePath)
         logger.info("Original signature: $originalSignature")
-        patchManifest(manifestFile.absolutePath, gson.toJson(Metadata(appComponentFactory, modules, originalSignature)))
+        logger.info("Sigbypass level: $sigbypassLevel")
+        patchManifest(manifestFile.absolutePath, gson.toJson(Metadata(appComponentFactory, modules, originalSignature, sigbypassLevel)))
         logger.info("Patched AndroidManifest.xml")
 
         logger.info("Adding patch dex")

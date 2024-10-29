@@ -1,6 +1,5 @@
 package io.github.duzhaokun123.yapatch;
 
-import android.app.Activity;
 import android.app.ActivityThread;
 import android.app.Application;
 import android.app.LoadedApk;
@@ -9,29 +8,20 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.CompatibilityInfo;
 import android.os.Build;
-import android.os.Bundle;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.zip.ZipFile;
 
 import de.robv.android.xposed.XposedHelpers;
+import io.github.duzhaokun123.yapatch.hooks.SigBypass;
+import io.github.duzhaokun123.yapatch.hooks.LoadLibraryHook;
+import io.github.duzhaokun123.yapatch.utils.Utils;
 import top.canyie.pine.Pine;
 import top.canyie.pine.PineConfig;
-import top.canyie.pine.callback.MethodHook;
 import top.canyie.pine.xposed.PineXposed;
 
 public class PatchMain {
@@ -43,7 +33,7 @@ public class PatchMain {
 
     private static PackageManager pm;
 
-    public static void load() throws PackageManager.NameNotFoundException, JSONException {
+    public static void load() throws PackageManager.NameNotFoundException, JSONException, NoSuchMethodException {
         PineConfig.debug = false;
         PineConfig.debuggable = false;
 
@@ -59,6 +49,20 @@ public class PatchMain {
         pm = context.getPackageManager();
         var applicationInfo = pm.getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
         var config = new JSONObject(applicationInfo.metaData.getString("yapatch"));
+
+        SigBypass.doSigBypass(context, config.getInt("sigbypassLevel"));
+        var modules = Utils.fromJsonArray(config.getJSONArray("modules"));
+        LoadLibraryHook.hook(context, modules);
+
+        if (modules.length == 0) {
+            Log.w(TAG, "No module to load");
+            return;
+        }
+        for (String module : modules) {
+            loadModule(module);
+        }
+        PineXposed.onPackageLoad(context.getPackageName(), Application.getProcessName(), applicationInfo, true, context.getClassLoader());
+
         String originalAppComponentFactory = null;
         try {
             originalAppComponentFactory = config.getString("originalAppComponentFactory");
@@ -72,19 +76,6 @@ public class PatchMain {
                 Log.w(TAG, "Original AppComponentFactory not found: " + originalAppComponentFactory);
             }
         }
-
-        SigBypass.doSigBypass(context, 1);
-
-        var modules = config.getJSONArray("modules");
-        if (modules.length() == 0) {
-            Log.e(TAG, "No modules to load");
-            return;
-        }
-        for (int i = 0; i < modules.length(); i++) {
-            var module = modules.getString(i);
-            loadModule(module);
-        }
-        PineXposed.onPackageLoad(context.getPackageName(), Application.getProcessName(), applicationInfo, true, context.getClassLoader());
     }
 
     private static Context createLoadedApkWithContext() {

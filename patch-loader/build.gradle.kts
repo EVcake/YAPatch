@@ -26,6 +26,8 @@ android {
 }
 
 dependencies {
+    implementation("top.canyie.pine:core:0.3.0")
+    implementation("top.canyie.pine:xposed:0.2.0")
 }
 
 task("copyDex") {

@@ -27,6 +27,9 @@ public class Main {
         @Parameter(names = {"-m", "--modules"}, description = "Xposed modules package name to load")
         protected List<String> modules = new ArrayList<>();
 
+        @Parameter(names = {"-l", "--sigbypasslv"}, description = "Signature bypass level. 0 (disable), 1 (pm). default 0")
+        protected int sigbypassLevel = 0;
+
         private final JCommander jCommander;
         protected final Logger logger;
 
