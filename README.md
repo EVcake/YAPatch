@@ -10,9 +10,17 @@ use https://github.com/Reginer/aosp-android-jar/tree/main/android-35 android.jar
 ./gradlew patch-loader:copyFiles patch:shadowJar
 ```
 
-## 有什么意义
+## 可用性
 
-除了在 Android 15 上 给 qq 加载 qa 外 好像没有什么意义
+已测试可用的 应用-模块,[模块] 有
+
+- QQ-QAuxiliary
+- 哔哩哔哩-哔哩漫游
+
+不可用的 应用 有
+
+- 菜鸟
+- 知乎
 
 ## 已知问题
 
