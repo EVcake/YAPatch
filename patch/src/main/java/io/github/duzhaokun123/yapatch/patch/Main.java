@@ -21,8 +21,8 @@ public class Main {
         @Parameter(names = {"-o", "--output"}, description = "Output directory")
         protected String outputPath = ".";
 
-        @Parameter(names = {"-k", "--keystore"}, arity = 4, description = "Set custom signature keystore. Followed by 4 arguments: keystore path, keystore password, keystore alias, keystore alias password", required = true)
-        protected List<String> keystoreArgs = Arrays.asList(null, null, null, null);
+        @Parameter(names = {"-k", "--keystore"}, arity = 4, description = "Set custom signature keystore. Followed by 4 arguments: keystore path, keystore password, keystore alias, keystore alias password")
+        protected List<String> keystoreArgs = Arrays.asList(null, "123456", "key0", "123456");
 
         @Parameter(names = {"-m", "--modules"}, description = "Xposed modules package name to load")
         protected List<String> modules = new ArrayList<>();

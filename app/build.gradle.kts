@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "io.github.duzhaokun123.yapatch"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "io.github.duzhaokun123.yapatch"
         minSdk = 33
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -40,4 +40,5 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(projects.patch)
 }

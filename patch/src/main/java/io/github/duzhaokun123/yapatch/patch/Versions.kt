@@ -7,9 +7,9 @@ object Versions {
 
     override fun toString(): String {
         return """
-            yapatch: $yapatch
-            pine: $pine
-            pineXposed: $pineXposed
+            YAPatch: $yapatch
+            Pine: $pine
+            PineXposed: $pineXposed
         """.trimIndent()
     }
 }

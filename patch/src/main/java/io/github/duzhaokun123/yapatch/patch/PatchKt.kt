@@ -86,7 +86,7 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
         logger.info("Adding patch dex")
         val patchDex = File(tempDir, "classes${dexFileCount + 1}.dex")
         patchDex.createNewFile()
-        this.javaClass.getResourceAsStream("/patch.dex")!!.use { input ->
+        this.javaClass.getResourceAsStream("/assets/yapatch/patch.dex")!!.use { input ->
             patchDex.outputStream().use { output ->
                 input.copyTo(output)
             }
@@ -102,7 +102,7 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
             val lsplantSoFile = File(tempDir, "lib/$abi/libpine.so")
             lsplantSoFile.parentFile.mkdirs()
             lsplantSoFile.createNewFile()
-            this.javaClass.getResourceAsStream("/pine/$abi/libpine.so")!!.use { input ->
+            this.javaClass.getResourceAsStream("/assets/yapatch/pine/$abi/libpine.so")!!.use { input ->
                 lsplantSoFile.outputStream().use { output ->
                     input.copyTo(output)
                 }
@@ -123,6 +123,7 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
 
         logger.info("Repackaging apk")
         val tempApk = File(outputFile.parent, outputFile.nameWithoutExtension + "_temp.apk")
+        tempApk.delete()
         ZipFile(tempApk).addFolder(tempDir, ZipParameters().apply {
             isIncludeRootFolder = false
             compressionLevel = CompressionLevel.NO_COMPRESSION
@@ -141,8 +142,14 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
             dstZFile.use {
                 logger.info("Signing apk")
                 val keyStore = KeyStore.getInstance(KeyStore.getDefaultType())
-                File(keystoreArgs[0]).inputStream().use {
-                    keyStore.load(it, keystoreArgs[1].toCharArray())
+                if (keystoreArgs[0] == null) {
+                    this.javaClass.getResourceAsStream("/assets/yapatch/key.jks").use {
+                        keyStore.load(it, keystoreArgs[1].toCharArray())
+                    }
+                } else {
+                    File(keystoreArgs[0]).inputStream().use {
+                        keyStore.load(it, keystoreArgs[1].toCharArray())
+                    }
                 }
                 val entry = keyStore.getEntry(
                     keystoreArgs[2],
