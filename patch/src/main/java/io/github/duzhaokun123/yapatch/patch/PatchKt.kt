@@ -19,6 +19,7 @@ import java.io.File
 import java.io.FilenameFilter
 import java.security.KeyStore
 import java.security.cert.X509Certificate
+import kotlin.system.exitProcess
 
 
 class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
@@ -92,13 +93,25 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
             }
         }
 
+        logger.info("Checking support abis")
+        val abis = File(tempDir, "lib").listFiles()?.map { it.name } ?: emptyList()
+        logger.info("Found abis: $abis")
+        if (abis.isNotEmpty() && "arm64-v8a" !in abis) {
+            logger.error("Only support arm64-v8a abi now")
+            clean(tempDir)
+            exitProcess(1)
+        }
+        val usedAbis = arrayOf("arm64-v8a")
+        val uselessAbis = abis - usedAbis
+        if (uselessAbis.isNotEmpty()) {
+            logger.info("Removing useless abis: $uselessAbis")
+            uselessAbis.forEach {
+                File(tempDir, "lib/$it").deleteRecursively()
+            }
+        }
+
         logger.info("Adding .so file")
-        listOf(
-            "arm64-v8a",
-//            "armeabi-v7a",
-//            "x86",
-//            "x86_64"
-        ).forEach { abi ->
+        usedAbis.forEach { abi ->
             val lsplantSoFile = File(tempDir, "lib/$abi/libpine.so")
             lsplantSoFile.parentFile.mkdirs()
             lsplantSoFile.createNewFile()
@@ -178,9 +191,7 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
         dstZFile.realign()
         logger.info("Repackaged")
 
-        logger.info("Cleaning")
-        tempDir.deleteRecursively()
-        tempApk.delete()
+        clean(tempDir, tempApk)
     }
 
     fun patchManifest(manifestPath: String, metadata: String) {
@@ -190,5 +201,11 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
         modificationProperty.addUsesPermission("android.permission.QUERY_ALL_PACKAGES")
         ManifestEditor(manifestPath, manifestPath + "_new", modificationProperty).processManifest()
         assert(File(manifestPath + "_new").renameTo(File(manifestPath).also { it.delete() }))
+    }
+
+    fun clean(tempDir: File, tempApk: File? = null) {
+        logger.info("Cleaning")
+        tempDir.deleteRecursively()
+        tempApk?.delete()
     }
 }
