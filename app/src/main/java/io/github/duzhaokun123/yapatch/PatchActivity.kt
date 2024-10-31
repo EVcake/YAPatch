@@ -2,14 +2,13 @@ package io.github.duzhaokun123.yapatch
 
 import android.graphics.Color
 import android.graphics.Typeface
-import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
-import io.github.duzhaokun123.test_board.bases.BaseActivity
+import io.github.duzhaokun123.yapatch.bases.BaseActivity
 import io.github.duzhaokun123.yapatch.databinding.ActivityPatchBinding
 import io.github.duzhaokun123.yapatch.patch.PatchKt
 import io.github.duzhaokun123.yapatch.patch.utils.Logger

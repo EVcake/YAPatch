@@ -1,4 +1,4 @@
-package io.github.duzhaokun123.test_board.bases
+package io.github.duzhaokun123.yapatch.bases
 
 import android.content.Context
 import android.view.LayoutInflater

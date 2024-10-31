@@ -1,5 +1,6 @@
 package io.github.duzhaokun123.yapatch
 
+import android.R
 import android.content.Context
 import android.content.Intent
 import android.widget.EditText
@@ -9,8 +10,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.github.duzhaokun123.test_board.bases.BaseActivity
-import io.github.duzhaokun123.test_board.bases.BaseSimpleAdapter
+import io.github.duzhaokun123.yapatch.bases.BaseActivity
+import io.github.duzhaokun123.yapatch.bases.BaseSimpleAdapter
 import io.github.duzhaokun123.yapatch.databinding.ActivityNewPatchBinding
 import io.github.duzhaokun123.yapatch.databinding.ItemAddModuleBinding
 import java.io.File
@@ -44,7 +45,7 @@ class NewPatchActivity: BaseActivity<ActivityNewPatchBinding>(ActivityNewPatchBi
             MaterialAlertDialogBuilder(this)
                 .setTitle("Add Module")
                 .setView(edittext)
-                .setPositiveButton(android.R.string.ok) {_ ,_ ->
+                .setPositiveButton(R.string.ok) { _, _ ->
                     val modules = edittext.text.toString().split("\n")
                     this.modules.addAll(modules)
                     baseBinding.rvModules.adapter?.notifyItemRangeInserted(this.modules.size - modules.size, modules.size)
