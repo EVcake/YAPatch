@@ -84,13 +84,14 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
         val originalSignature = ApkSignatureHelper.getApkSignInfo(srcApk.absolutePath)
         logger.info("Original signature: $originalSignature")
         logger.info("Sigbypass level: $sigbypassLevel")
-        patchManifest(manifestFile.absolutePath, gson.toJson(Metadata(appComponentFactory, modules, originalSignature, sigbypassLevel)))
+        patchManifest(manifestFile.absolutePath, gson.toJson(Metadata(appComponentFactory, modules, originalSignature, sigbypassLevel,
+            Versions.loader)))
         logger.info("Patched AndroidManifest.xml")
 
         logger.info("Adding patch dex")
         val patchDex = File(tempDir, "classes${dexFileCount + 1}.dex")
         patchDex.createNewFile()
-        this.javaClass.getResourceAsStream("/assets/yapatch/patch.dex")!!.use { input ->
+        this.javaClass.getResourceAsStream("/assets/yapatch/loader.dex")!!.use { input ->
             patchDex.outputStream().use { output ->
                 input.copyTo(output)
             }
@@ -157,9 +158,11 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
         tempZFIle.use {
             dstZFile.use {
                 logger.info("Signing apk")
-                val keyStore = KeyStore.getInstance(KeyStore.getDefaultType())
+                val defaultType = KeyStore.getDefaultType().lowercase()
+                logger.info("Default keystore type: $defaultType")
+                val keyStore = KeyStore.getInstance(defaultType)
                 if (keystoreArgs[0] == null) {
-                    this.javaClass.getResourceAsStream("/assets/lspatch/keystore").use {
+                    this.javaClass.getResourceAsStream("/assets/lspatch/keystore_$defaultType").use {
                         keyStore.load(it, keystoreArgs[1].toCharArray())
                     }
                 } else {

@@ -37,7 +37,7 @@ class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::cl
                 textView.text = message
                 textView.setTextColor(Color.WHITE)
                 textView.typeface = Typeface.MONOSPACE
-                baseBinding.llLog.addView(textView)
+                addView(textView)
             }
         }
 
@@ -47,7 +47,7 @@ class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::cl
                 textView.text = message
                 textView.setTextColor(Color.YELLOW)
                 textView.typeface = Typeface.MONOSPACE
-                baseBinding.llLog.addView(textView)
+                addView(textView)
             }
         }
 
@@ -57,7 +57,14 @@ class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::cl
                 textView.text = message
                 textView.setTextColor(Color.RED)
                 textView.typeface = Typeface.MONOSPACE
-                baseBinding.llLog.addView(textView)
+                addView(textView)
+            }
+        }
+
+        fun addView(textView: TextView) {
+            baseBinding.llLog.addView(textView)
+            baseBinding.svLog.post {
+                baseBinding.svLog.fullScroll(View.FOCUS_DOWN)
             }
         }
     }
@@ -81,6 +88,7 @@ class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::cl
             runMain {
                 baseBinding.piProgress.visibility = View.GONE
                 baseBinding.btnSave.isEnabled = ok
+                baseBinding.svLog.fullScroll(View.FOCUS_DOWN)
             }
         }
     }

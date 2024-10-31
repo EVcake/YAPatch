@@ -38,7 +38,7 @@ task("copyDex") {
         val outPath = "${rootProject.projectDir}/patch/src/main/resources/assets/yapatch"
         copy {
             from(dexOutPath)
-            rename("classes.dex", "patch.dex")
+            rename("classes.dex", "loader.dex")
             into(outPath)
         }
         println("Patch dex has been copied to $outPath")
