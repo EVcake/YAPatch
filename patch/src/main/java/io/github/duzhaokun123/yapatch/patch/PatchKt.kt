@@ -44,6 +44,9 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
         modules.forEach {
             logger.info("Module: $it")
         }
+        if (modules.isEmpty()) {
+            logger.warn("No module loaded")
+        }
         patch(apkFile, outputFile)
     }
 
@@ -156,7 +159,7 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
                 logger.info("Signing apk")
                 val keyStore = KeyStore.getInstance(KeyStore.getDefaultType())
                 if (keystoreArgs[0] == null) {
-                    this.javaClass.getResourceAsStream("/assets/yapatch/key.jks").use {
+                    this.javaClass.getResourceAsStream("/assets/lspatch/keystore").use {
                         keyStore.load(it, keystoreArgs[1].toCharArray())
                     }
                 } else {

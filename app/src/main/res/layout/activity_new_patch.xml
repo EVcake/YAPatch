@@ -3,4 +3,83 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@+id/ll_openFile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_fileName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="choose..."
+            android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
+
+        <Button
+            android:id="@+id/btn_openFile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/open" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_modules"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_openFile">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/btn_addModule"
+            android:text="@string/modules"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
+
+        <Button
+            android:id="@+id/btn_addModule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="@string/add" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_modules"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btn_addModule" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_modules"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="signture bypass"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/sp_signatureBypass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/signature_bypass" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_patch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:text="@string/patch"
+        android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
 </RelativeLayout>

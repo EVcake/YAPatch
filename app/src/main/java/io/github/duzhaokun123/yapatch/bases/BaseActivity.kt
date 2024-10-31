@@ -20,12 +20,11 @@ import androidx.core.view.updatePadding
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.viewbinding.ViewBinding
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.github.duzhaokun123.yapatch.utils.TipUtil
-import net.matsudamper.viewbindingutil.ViewBindingUtil
 import io.github.duzhaokun123.yapatch.R
 import io.github.duzhaokun123.yapatch.databinding.ActivityBaseRootBinding
+import io.github.duzhaokun123.yapatch.utils.TipUtil
 import io.github.duzhaokun123.yapatch.utils.maxSystemBarsDisplayCutout
+import net.matsudamper.viewbindingutil.ViewBindingUtil
 
 abstract class BaseActivity<BaseBinding : ViewBinding>(
     private val baseBindingClass: Class<BaseBinding>, vararg val configs: Config, @StyleRes val themeId: Int = R.style.Theme_YAPatch

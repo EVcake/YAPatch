@@ -35,7 +35,7 @@ task("copyDex") {
 
     doLast {
         val dexOutPath = "$buildDir/intermediates/dex/release/mergeDexRelease/classes.dex"
-        val outPath = "${rootProject.projectDir}/patch/src/main/resources"
+        val outPath = "${rootProject.projectDir}/patch/src/main/resources/assets/yapatch"
         copy {
             from(dexOutPath)
             rename("classes.dex", "patch.dex")

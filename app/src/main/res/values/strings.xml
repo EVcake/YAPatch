@@ -4,4 +4,9 @@
     <string name="details">details</string>
     <string name="about">About</string>
     <string name="add">add</string>
+    <string name="open">open</string>
+    <string name="modules">modules</string>
+    <string name="patch">patch</string>
+    <string name="install">install</string>
+    <string name="save">save</string>
 </resources>

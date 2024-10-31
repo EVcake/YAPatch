@@ -25,6 +25,10 @@
         <activity
             android:name=".NewPatchActivity"
             android:label="new patch" />
+        <activity
+            android:name=".PatchActivity"
+            android:label="@string/patch" />
+
     </application>
 
 </manifest>
