@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:name=".Application"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -12,13 +14,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.YAPatch"
         tools:targetApi="31">
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".NewPatchActivity"
+            android:label="new patch" />
     </application>
 
 </manifest>

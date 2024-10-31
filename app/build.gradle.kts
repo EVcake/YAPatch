@@ -26,6 +26,10 @@ android {
             )
         }
     }
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -41,4 +45,6 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(projects.patch)
+    implementation(libs.viewbindingutil)
+    implementation(libs.androidx.activity.ktx)
 }

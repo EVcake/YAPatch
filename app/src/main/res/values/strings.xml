@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">YAPatch</string>
+    <string name="unknown_error">unknown error</string>
+    <string name="details">details</string>
+    <string name="about">About</string>
+    <string name="add">add</string>
 </resources>

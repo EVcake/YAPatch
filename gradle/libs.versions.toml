@@ -1,17 +1,21 @@
 [versions]
+activityKtx = "1.9.3"
 agp = "8.7.1"
 kotlin = "2.0.21"
 coreKtx = "1.13.1"
 appcompat = "1.7.0"
 material = "1.12.0"
 beust-jcommander = "1.82"
+viewbindingutil = "0.1"
 zip4j = "2.11.5"
 
 [libraries]
+androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 beust-jcommander = { module = "com.beust:jcommander", version.ref = "beust-jcommander" }
+viewbindingutil = { module = "com.github.matsudamper:ViewBindingUtil", version.ref = "viewbindingutil" }
 zip4j = { module = "net.lingala.zip4j:zip4j", version.ref = "zip4j" }
 xposed = { module = "de.robv.android.xposed:api", version = "82" }
 
