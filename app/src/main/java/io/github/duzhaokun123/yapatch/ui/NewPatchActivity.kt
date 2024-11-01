@@ -1,4 +1,4 @@
-package io.github.duzhaokun123.yapatch
+package io.github.duzhaokun123.yapatch.ui
 
 import android.R
 import android.content.Context

@@ -45,4 +45,5 @@ dependencies {
     implementation(projects.patch)
     implementation(libs.viewbindingutil)
     implementation(libs.androidx.activity.ktx)
+    implementation(libs.gson)
 }

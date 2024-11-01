@@ -1,13 +1,13 @@
-package io.github.duzhaokun123.yapatch
+package io.github.duzhaokun123.yapatch.ui
 
 import android.graphics.Color
 import android.graphics.Typeface
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
+import io.github.duzhaokun123.yapatch.R
 import io.github.duzhaokun123.yapatch.bases.BaseActivity
 import io.github.duzhaokun123.yapatch.databinding.ActivityPatchBinding
 import io.github.duzhaokun123.yapatch.patch.PatchKt
@@ -24,7 +24,6 @@ class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::cl
                 it.copyTo(output)
             }
         }
-        finish()
     }
 
     val commandLine by lazy { startIntent.getStringArrayExtra("commandLine") }
@@ -87,15 +86,19 @@ class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::cl
             runMain {
                 baseBinding.piProgress.visibility = View.GONE
                 baseBinding.btnSave.isEnabled = ok
+                baseBinding.btnInstall.isEnabled = ok
                 baseBinding.svLog.fullScroll(View.FOCUS_DOWN)
+                supportActionBar?.apply {
+                    setDisplayHomeAsUpEnabled(true)
+                    setDisplayShowHomeEnabled(true)
+                    setHomeAsUpIndicator(R.drawable.ic_arrow_back_24)
+                }
             }
         }
     }
 
     override fun onApplyWindowInsetsCompat(insets: WindowInsetsCompat) {
         super.onApplyWindowInsetsCompat(insets)
-        baseBinding.llButtons.updateLayoutParams<LinearLayout.LayoutParams> {
-            bottomMargin = insets.systemGestureInsets.bottom
-        }
+        baseBinding.llButtons.updatePadding(bottom = insets.systemGestureInsets.bottom)
     }
 }

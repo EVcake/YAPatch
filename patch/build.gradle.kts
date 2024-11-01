@@ -25,6 +25,6 @@ dependencies {
     implementation(libs.beust.jcommander)
     implementation(libs.zip4j)
     implementation("com.android.tools.build:apkzlib:8.7.1")
-    implementation("com.google.code.gson:gson:2.11.0")
+    implementation(libs.gson)
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 }

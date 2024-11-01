@@ -18,6 +18,7 @@ abstract class BaseSimpleAdapter<BaseBinding : ViewBinding>(
         val baseBind = ViewBindingUtil.inflate(
             LayoutInflater.from(context), null, false, baseBindingClass
         )
+        baseBind.root.layoutParams = onCreateRootLayoutParam()
         return BaseBindVH(baseBind)
     }
 
@@ -30,4 +31,8 @@ abstract class BaseSimpleAdapter<BaseBinding : ViewBinding>(
     open fun initViews(baseBinding: BaseBinding, position: Int) {}
     open fun initEvents(baseBinding: BaseBinding, position: Int) {}
     open fun initData(baseBinding: BaseBinding, position: Int) {}
+
+    open fun onCreateRootLayoutParam(): ViewGroup.LayoutParams? = RecyclerView.LayoutParams(
+        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+    )
 }
