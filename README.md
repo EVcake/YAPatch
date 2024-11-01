@@ -16,6 +16,7 @@ use https://github.com/Reginer/aosp-android-jar/tree/main/android-35 android.jar
 
 - QQ-QAuxiliary
 - 哔哩哔哩-哔哩漫游
+- 微信
 
 不可用的 应用 有
 
