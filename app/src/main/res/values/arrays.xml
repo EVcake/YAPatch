@@ -2,6 +2,6 @@
 <resources>
     <string-array name="signature_bypass">
         <item>lv 0: disabled</item>
-        <item>lv 1: pm</item>
+        <item>lv 1: pm bypass</item>
     </string-array>
 </resources>

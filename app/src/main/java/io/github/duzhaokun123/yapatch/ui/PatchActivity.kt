@@ -1,10 +1,12 @@
 package io.github.duzhaokun123.yapatch.ui
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.view.View
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import io.github.duzhaokun123.yapatch.R
@@ -70,6 +72,14 @@ class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::cl
     override fun initEvents() {
         baseBinding.btnSave.setOnClickListener {
             saveFileLauncher.launch("app_yapatched.apk")
+        }
+        baseBinding.btnInstall.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(
+                    ("file://" + File(cacheDir, "app_yapatched.apk").absolutePath).toUri(),
+                    "application/vnd.android.package-archive"
+                )
+            })
         }
     }
 
