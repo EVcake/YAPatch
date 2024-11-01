@@ -3,6 +3,7 @@ package io.github.duzhaokun123.yapatch.ui
 import android.R
 import android.content.Context
 import android.content.Intent
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
@@ -26,6 +27,14 @@ class NewPatchActivity: BaseActivity<ActivityNewPatchBinding>(ActivityNewPatchBi
         }
         baseBinding.tvFileName.text = uri.path
     }
+    val selectModuleLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        result.data?.getStringExtra("module")?.let {
+            modules.add(it)
+            baseBinding.rvModules.adapter?.notifyItemInserted(modules.size - 1)
+        }
+    }
 
     val tempFile by lazy { File(cacheDir, "app.apk").also { it.delete() } }
 
@@ -41,15 +50,7 @@ class NewPatchActivity: BaseActivity<ActivityNewPatchBinding>(ActivityNewPatchBi
             openFileLauncher.launch("application/vnd.android.package-archive")
         }
         baseBinding.btnAddModule.setOnClickListener {
-            val edittext = EditText(this)
-            MaterialAlertDialogBuilder(this)
-                .setTitle("Add Module")
-                .setView(edittext)
-                .setPositiveButton(R.string.ok) { _, _ ->
-                    val modules = edittext.text.toString().split("\n")
-                    this.modules.addAll(modules)
-                    baseBinding.rvModules.adapter?.notifyItemRangeInserted(this.modules.size - modules.size, modules.size)
-                }.show()
+            selectModuleLauncher.launch(Intent(this, SelectModuleActivity::class.java))
         }
         baseBinding.btnPatch.setOnClickListener {
             val commandLine = mutableListOf<String>()
@@ -81,7 +82,9 @@ class NewPatchActivity: BaseActivity<ActivityNewPatchBinding>(ActivityNewPatchBi
     ) {
         override fun initData(baseBinding: ItemAddModuleBinding, position: Int) {
             val module = modules[position]
-            baseBinding.tvPackageName.text = module
+            val moduleInfo = context.packageManager.getApplicationInfo(module, 0)
+            baseBinding.tvName.text = moduleInfo.loadLabel(context.packageManager)
+            baseBinding.ivIcon.setImageDrawable(moduleInfo.loadIcon(context.packageManager))
         }
 
         override fun initEvents(baseBinding: ItemAddModuleBinding, position: Int) {
@@ -92,5 +95,8 @@ class NewPatchActivity: BaseActivity<ActivityNewPatchBinding>(ActivityNewPatchBi
         }
 
         override fun getItemCount() = modules.size
+        
+        override fun onCreateRootLayoutParam() =
+            ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 }

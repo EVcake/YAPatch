@@ -1,19 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_vertical">
+    android:layout_height="match_parent"
+    android:background="?attr/selectableItemBackground"
+    android:padding="4dp">
+
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp" />
 
     <TextView
-        android:id="@+id/tv_packageName"
-        android:layout_width="0dp"
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        android:layout_marginStart="4dp"
+        android:layout_toEndOf="@id/iv_icon"
+        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+        tools:text="App Name" />
 
     <ImageButton
         android:id="@+id/ib_remove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tv_name"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@id/iv_icon"
         android:background="@null"
         android:src="@drawable/ic_close_24" />
-</LinearLayout>
+</RelativeLayout>

@@ -6,13 +6,11 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.duzhaokun123.yapatch.BuildConfig
 import io.github.duzhaokun123.yapatch.R
-import io.github.duzhaokun123.yapatch.app
 import io.github.duzhaokun123.yapatch.bases.BaseActivity
 import io.github.duzhaokun123.yapatch.bases.BaseSimpleAdapter
 import io.github.duzhaokun123.yapatch.databinding.ActivityMainBinding
