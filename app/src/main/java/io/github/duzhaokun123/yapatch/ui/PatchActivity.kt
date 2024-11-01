@@ -3,9 +3,11 @@ package io.github.duzhaokun123.yapatch.ui
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -76,7 +78,7 @@ class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::cl
         baseBinding.btnInstall.setOnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW).apply {
                 setDataAndType(
-                    ("file://" + File(cacheDir, "app_yapatched.apk").absolutePath).toUri(),
+                    FileProvider.getUriForFile(this@PatchActivity, "$packageName.provider", File(cacheDir, "app_yapatched.apk")),
                     "application/vnd.android.package-archive"
                 )
             })
@@ -96,7 +98,7 @@ class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::cl
             runMain {
                 baseBinding.piProgress.visibility = View.GONE
                 baseBinding.btnSave.isEnabled = ok
-                baseBinding.btnInstall.isEnabled = ok
+//                baseBinding.btnInstall.isEnabled = ok
                 baseBinding.svLog.fullScroll(View.FOCUS_DOWN)
                 supportActionBar?.apply {
                     setDisplayHomeAsUpEnabled(true)
