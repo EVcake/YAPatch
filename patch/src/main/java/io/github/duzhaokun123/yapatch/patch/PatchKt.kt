@@ -103,7 +103,7 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
         if (abis.isNotEmpty() && "arm64-v8a" !in abis) {
             logger.error("Only support arm64-v8a abi now")
             clean(tempDir)
-            exitProcess(1)
+            throw RuntimeException("Only support arm64-v8a abi now")
         }
         val usedAbis = arrayOf("arm64-v8a")
         val uselessAbis = abis - usedAbis

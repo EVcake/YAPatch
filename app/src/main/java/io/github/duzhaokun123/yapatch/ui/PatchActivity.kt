@@ -97,7 +97,6 @@ class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::cl
                 ok = true
             } catch (e: Exception) {
                 logger.error(e.stackTraceToString())
-                e.printStackTrace()
             }
             runMain {
                 baseBinding.piProgress.visibility = View.GONE
