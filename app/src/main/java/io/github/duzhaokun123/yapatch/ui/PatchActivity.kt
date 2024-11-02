@@ -28,6 +28,7 @@ class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::cl
                 it.copyTo(output)
             }
         }
+        logger.info("Saved to $uri")
     }
 
     val commandLine by lazy { startIntent.getStringArrayExtra("commandLine") }
@@ -78,9 +79,12 @@ class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::cl
         baseBinding.btnInstall.setOnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW).apply {
                 setDataAndType(
-                    FileProvider.getUriForFile(this@PatchActivity, "$packageName.provider", File(cacheDir, "app_yapatched.apk")),
+                    FileProvider.getUriForFile(this@PatchActivity, "$packageName.provider", File(cacheDir, "app_yapatched.apk")).also {
+                        logger.info("Install uri: $it")
+                    },
                     "application/vnd.android.package-archive"
                 )
+                setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             })
         }
     }
@@ -98,7 +102,7 @@ class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::cl
             runMain {
                 baseBinding.piProgress.visibility = View.GONE
                 baseBinding.btnSave.isEnabled = ok
-//                baseBinding.btnInstall.isEnabled = ok
+                baseBinding.btnInstall.isEnabled = ok
                 baseBinding.svLog.fullScroll(View.FOCUS_DOWN)
                 supportActionBar?.apply {
                     setDisplayHomeAsUpEnabled(true)

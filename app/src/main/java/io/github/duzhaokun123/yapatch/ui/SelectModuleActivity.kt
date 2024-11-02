@@ -43,6 +43,7 @@ class SelectModuleActivity :
             val module = modulesList[position]
             baseBinding.ivIcon.setImageDrawable(module.loadIcon(context.packageManager))
             baseBinding.tvName.text = module.loadLabel(context.packageManager)
+            baseBinding.tvDescription.text = module.packageName
         }
 
         override fun initEvents(baseBinding: ItemAppBinding, position: Int) {
