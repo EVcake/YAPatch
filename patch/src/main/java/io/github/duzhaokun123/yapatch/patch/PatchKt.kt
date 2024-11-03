@@ -96,7 +96,6 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
         if (!manifestFile.exists()) {
             throw RuntimeException("AndroidManifest.xml not found")
         }
-        val newManifestFile = File(tempDir, "AndroidManifest_new.xml")
         logger.info("Found AndroidManifest.xml")
         val pair = ManifestParser.parseManifestFile(manifestFile.absolutePath)
         if (pair == null) {

@@ -7,7 +7,7 @@ public class AppComponentFactory extends android.app.AppComponentFactory {
     static {
         Log.d(TAG, "AppComponentFactory loaded");
         try {
-            PatchMain.load();
+            LoaderMain.load();
         } catch (Exception e) {
             Log.e(TAG, "Error loading patch", e);
         }

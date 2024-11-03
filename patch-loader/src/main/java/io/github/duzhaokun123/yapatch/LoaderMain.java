@@ -29,7 +29,7 @@ import top.canyie.pine.Pine;
 import top.canyie.pine.PineConfig;
 import top.canyie.pine.xposed.PineXposed;
 
-public class PatchMain {
+public class LoaderMain {
     static String TAG = "YAPatch";
     private static final Map<String, String> archToLib = new HashMap<>(4);
 
@@ -40,7 +40,7 @@ public class PatchMain {
 
     private static PackageManager pm;
 
-    public static void load() throws PackageManager.NameNotFoundException, JSONException {
+    public static void load() throws PackageManager.NameNotFoundException, JSONException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         archToLib.put("arm", "armeabi-v7a");
         archToLib.put("arm64", "arm64-v8a");
         archToLib.put("x86", "x86");
@@ -61,6 +61,14 @@ public class PatchMain {
         pm = context.getPackageManager();
         var applicationInfo = pm.getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
         var config = new JSONObject(applicationInfo.metaData.getString("yapatch"));
+        Class<?> VMRuntime = Class.forName("dalvik.system.VMRuntime");
+        Method getRuntime = VMRuntime.getDeclaredMethod("getRuntime");
+        getRuntime.setAccessible(true);
+        Method vmInstructionSet = VMRuntime.getDeclaredMethod("vmInstructionSet");
+        vmInstructionSet.setAccessible(true);
+        String arch = (String) vmInstructionSet.invoke(getRuntime.invoke(null));
+        String libName = archToLib.get(arch);
+
         PineConfig.libLoader = new Pine.LibLoader() {
             @Override
             public void loadLib() {
@@ -74,13 +82,6 @@ public class PatchMain {
             }
 
             public void loadLibrary() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, PackageManager.NameNotFoundException, JSONException {
-                Class<?> VMRuntime = Class.forName("dalvik.system.VMRuntime");
-                Method getRuntime = VMRuntime.getDeclaredMethod("getRuntime");
-                getRuntime.setAccessible(true);
-                Method vmInstructionSet = VMRuntime.getDeclaredMethod("vmInstructionSet");
-                vmInstructionSet.setAccessible(true);
-                String arch = (String) vmInstructionSet.invoke(getRuntime.invoke(null));
-                String libName = archToLib.get(arch);
                 String sourceDir;
                 try {
                    sourceDir = pm.getApplicationInfo(config.getString("manager"), 0).sourceDir;
@@ -108,7 +109,7 @@ public class PatchMain {
             return;
         }
         for (String module : modules) {
-            loadModule(module);
+            loadModule(module, libName);
         }
         PineXposed.onPackageLoad(context.getPackageName(), Application.getProcessName(), applicationInfo, true, context.getClassLoader());
 
@@ -169,7 +170,7 @@ public class PatchMain {
         }
     }
 
-    private static void loadModule(String module) {
+    private static void loadModule(String module, String libName) {
         ApplicationInfo moduleInfo;
         try {
             moduleInfo = pm.getApplicationInfo(module, 0);
@@ -179,7 +180,7 @@ public class PatchMain {
         }
 
         var modulePath = moduleInfo.sourceDir;
-        var librarySearchPath = modulePath + "!/lib/arm64-v8a";
+        var librarySearchPath = modulePath + "!/lib/" + libName;
         PineXposed.loadModule(new File(modulePath), librarySearchPath, false);
         Log.d(TAG, "Module loaded: " + module);
     }
