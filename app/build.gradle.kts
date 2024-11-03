@@ -15,6 +15,9 @@ android {
         versionName = "0.1.3"
     }
 
+    androidResources {
+        generateLocaleConfig = true
+    }
     buildTypes {
         release {
             isMinifyEnabled = false

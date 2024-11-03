@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">YAPatch</string>
+    <string name="app_name" translatable="false">YAPatch</string>
     <string name="unknown_error">unknown error</string>
     <string name="details">details</string>
     <string name="about">About</string>
@@ -10,4 +10,11 @@
     <string name="install">install</string>
     <string name="save">save</string>
     <string name="refresh">refresh</string>
+    <string name="patched">patched</string>
+    <string name="choose">choose…</string>
+    <string name="signture_bypass">signture bypass</string>
+    <string name="select_module">select module</string>
+    <string name="new_patch">new patch</string>
+    <string name="signature_bypass_l0">lv 0: disabled</string>
+    <string name="signature_bypass_l1">lv 1: pm bypass</string>
 </resources>

@@ -10,7 +10,7 @@
         android:id="@+id/tv_patched"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="patched"
+        android:text="@string/patched"
         android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
         app:layout_constraintEnd_toStartOf="@id/tv_modules"
         app:layout_constraintStart_toStartOf="parent"

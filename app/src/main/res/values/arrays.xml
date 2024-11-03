@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="signature_bypass">
-        <item>lv 0: disabled</item>
-        <item>lv 1: pm bypass</item>
+        <item>@string/signature_bypass_l0</item>
+        <item>@string/signature_bypass_l1</item>
     </string-array>
 </resources>

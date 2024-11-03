@@ -26,12 +26,12 @@
         </activity>
         <activity
             android:name=".ui.NewPatchActivity"
-            android:label="new patch" />
+            android:label="@string/new_patch" />
         <activity
             android:name=".ui.PatchActivity"
             android:label="@string/patch" />
         <activity android:name=".ui.SelectModuleActivity"
-            android:label="select module" />
+            android:label="@string/select_module" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
