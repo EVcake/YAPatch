@@ -12,8 +12,8 @@ import io.github.duzhaokun123.yapatch.patch.utils.StdLogger;
 
 public class Main {
     public static class Patch {
-        @Parameter(description = "apks")
-        protected List<String> apkPaths = new ArrayList<>();
+        @Parameter(description = "apk")
+        protected String apk = null;
 
         @Parameter(names = {"-h", "--help"}, help = true, order = 0, description = "Print this message")
         protected boolean help = false;
@@ -29,6 +29,9 @@ public class Main {
 
         @Parameter(names = {"-l", "--sigbypasslv"}, description = "Signature bypass level. 0 (disable), 1 (pm). default 0")
         protected int sigbypassLevel = 0;
+
+        @Parameter(names = {"-s", "--split"}, description = "Split apks")
+        protected List<String> splitApks = new ArrayList<>();
 
         @Parameter(names = {"-v", "--version"}, description = "Print version")
         protected boolean version = false;
@@ -50,8 +53,8 @@ public class Main {
 
             if (version) return;
 
-            if (apkPaths == null || apkPaths.isEmpty()) {
-                logger.error("No apks specified");
+            if (apk == null) {
+                logger.error("No apk specified");
                 help = true;
             }
         }

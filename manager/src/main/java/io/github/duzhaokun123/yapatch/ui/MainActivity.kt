@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -146,6 +147,18 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
                     context.startActivity(intent)
                 } catch (ignored: Exception) {
                     TipUtil.showTip(context, "No module settings")
+                }
+            }
+            baseBinding.root.onLongClickListener = object : View.OnLongClickListener {
+                override fun onLongClick(v: View?): Boolean {
+                    val moduleDescription = module.metaData?.getString("xposeddescription")
+                    MaterialAlertDialogBuilder(context)
+                        .setTitle(module.loadLabel(context.packageManager))
+                        .setIcon(module.loadIcon(context.packageManager))
+                        .setMessage(moduleDescription)
+                        .setPositiveButton(android.R.string.ok, null)
+                        .show()
+                    return true
                 }
             }
         }

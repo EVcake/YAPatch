@@ -24,13 +24,19 @@ import java.security.cert.X509Certificate
 class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
     val gson = Gson()
 
+    val zFileOptions = ZFileOptions().apply {
+        setAlignmentRule(
+            AlignmentRules.compose(
+                AlignmentRules.constantForSuffix(".so", 4096),
+                AlignmentRules.constantForSuffix("resources.arsc", 4096),
+            )
+        )
+    }
+
     override fun run() {
         logger.info("PatchKt run")
-        if (apkPaths.size != 1) {
-            throw RuntimeException("YAPatch only support one-file apk now")
-        }
-        logger.info("Patching ${apkPaths[0]}")
-        val apkFile = File(apkPaths[0])
+        logger.info("Patching $apk")
+        val apkFile = File(apk)
         val outputFileName = apkFile.nameWithoutExtension + "_yapatched.apk"
         val outputDir = File(outputPath)
         logger.info("Output to ${outputDir.absolutePath}")
@@ -47,6 +53,24 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
             logger.warn("No module loaded")
         }
         patch(apkFile, outputFile)
+
+        if (splitApks != null && splitApks.isNotEmpty()) {
+            logger.info("Resign split apks")
+            splitApks.forEach { apkPatch ->
+                val apkFile = File(apkPatch)
+                val outputFileFile = File(outputPath, apkFile.nameWithoutExtension + "_yapatched.apk")
+                outputFileFile.delete()
+                logger.info("Resigning $apkPatch")
+                logger.info("Output to ${outputFileFile.absolutePath}")
+                val srcZFile = ZFile.openReadOnly(apkFile)
+                val dstZFile = ZFile.openReadWrite(outputFileFile, zFileOptions)
+                srcZFile.use {
+                    dstZFile.use {
+                        resign(srcZFile, dstZFile)
+                    }
+                }
+            }
+        }
     }
 
     fun patch(srcApk: File, outputFile: File) {
@@ -106,54 +130,12 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
 
         })
         val tempZFIle = ZFile.openReadOnly(tempApk)
-        val dstZFile = ZFile.openReadWrite(outputFile, ZFileOptions().apply {
-            setAlignmentRule(
-                AlignmentRules.compose(
-                    AlignmentRules.constantForSuffix(".so", 4096),
-                    AlignmentRules.constantForSuffix("resources.arsc", 4096),
-                )
-            )
-        })
+        val dstZFile = ZFile.openReadWrite(outputFile, zFileOptions)
         tempZFIle.use {
             dstZFile.use {
-                logger.info("Signing apk")
-                val defaultType = KeyStore.getDefaultType().lowercase()
-                logger.info("Default keystore type: $defaultType")
-                val keyStore = KeyStore.getInstance(defaultType)
-                if (keystoreArgs[0] == null) {
-                    this.javaClass.getResourceAsStream("/assets/lspatch/keystore_$defaultType").use {
-                        keyStore.load(it, keystoreArgs[1].toCharArray())
-                    }
-                } else {
-                    File(keystoreArgs[0]).inputStream().use {
-                        keyStore.load(it, keystoreArgs[1].toCharArray())
-                    }
-                }
-                val entry = keyStore.getEntry(
-                    keystoreArgs[2],
-                    KeyStore.PasswordProtection(keystoreArgs[3].toCharArray())
-                ) as KeyStore.PrivateKeyEntry
-                SigningExtension(
-                    SigningOptions.builder()
-                        .setMinSdkVersion(28)
-                        .setV2SigningEnabled(true)
-                        .setCertificates(*(entry.certificateChain as Array<X509Certificate>))
-                        .setKey(entry.privateKey)
-                        .build()
-                ).register(dstZFile)
-                logger.info("Signed")
-                tempZFIle.entries().forEach { entry ->
-                    val name = entry.centralDirectoryHeader.name
-                    if (name.startsWith("META-INF") && (name.endsWith(".SF") || name.endsWith(".MF") || name.endsWith(".RSA"))) return@forEach
-                    if (name == "resources.arsc" || name.endsWith(".so")) {
-                        dstZFile.add(name, entry.open(), false)
-                        return@forEach
-                    }
-                    dstZFile.add(name, entry.open())
-                }
+                resign(tempZFIle, dstZFile)
             }
         }
-        dstZFile.realign()
         logger.info("Repackaged")
 
         clean(tempDir, tempApk)
@@ -172,5 +154,47 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
         logger.info("Cleaning")
         tempDir.deleteRecursively()
         tempApk?.delete()
+    }
+
+    fun resign(srcZFile: ZFile, dstZFile: ZFile) {
+        logger.info("Signing apk")
+        val defaultType = KeyStore.getDefaultType().lowercase()
+        logger.info("Default keystore type: $defaultType")
+        val keyStore = KeyStore.getInstance(defaultType)
+        if (keystoreArgs[0] == null) {
+            this.javaClass.getResourceAsStream("/assets/lspatch/keystore_$defaultType").use {
+                keyStore.load(it, keystoreArgs[1].toCharArray())
+            }
+        } else {
+            File(keystoreArgs[0]).inputStream().use {
+                keyStore.load(it, keystoreArgs[1].toCharArray())
+            }
+        }
+        val entry = keyStore.getEntry(
+            keystoreArgs[2],
+            KeyStore.PasswordProtection(keystoreArgs[3].toCharArray())
+        ) as KeyStore.PrivateKeyEntry
+        SigningExtension(
+            SigningOptions.builder()
+                .setMinSdkVersion(28)
+                .setV2SigningEnabled(true)
+                .setCertificates(*(entry.certificateChain as Array<X509Certificate>))
+                .setKey(entry.privateKey)
+                .build()
+        ).register(dstZFile)
+        srcZFile.entries().forEach { entry ->
+            val name = entry.centralDirectoryHeader.name
+            if (name.startsWith("META-INF") && (name.endsWith(".SF") || name.endsWith(".MF") || name.endsWith(
+                    ".RSA"
+                ))
+            ) return@forEach
+            if (name == "resources.arsc" || name.endsWith(".so")) {
+                dstZFile.add(name, entry.open(), false)
+                return@forEach
+            }
+            dstZFile.add(name, entry.open())
+        }
+        dstZFile.realign()
+        logger.info("Signed")
     }
 }
