@@ -23,6 +23,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "YAPatch"
-include(":app")
+include(":manager")
 include(":patch")
 include(":patch-loader")

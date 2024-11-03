@@ -56,7 +56,7 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
                     .setTitle(R.string.about)
                     .setMessage(
                         """
-                            |App Version: ${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})
+                            |Manager Version: ${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})
                             |YAPatch Version: ${Versions.yapatch}
                             |Pine Version: ${Versions.pine}
                             |PineXposed Version: ${Versions.pineXposed}
