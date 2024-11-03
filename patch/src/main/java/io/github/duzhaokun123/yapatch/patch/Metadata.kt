@@ -5,6 +5,7 @@ data class Metadata(
     val modules: List<String>,
     val originalSignature: String,
     val sigbypassLevel: Int,
-    val loader: String?
+    val loader: String?,
+    val manager: String = "io.github.duzhaokun123.yapatch"
 ) {
 }

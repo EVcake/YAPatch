@@ -9,11 +9,16 @@ import android.content.pm.PackageManager;
 import android.content.res.CompatibilityInfo;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.lsposed.hiddenapibypass.HiddenApiBypass;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -26,6 +31,8 @@ import top.canyie.pine.xposed.PineXposed;
 
 public class PatchMain {
     static String TAG = "YAPatch";
+    private static final Map<String, String> archToLib = new HashMap<>(4);
+
 
     private static LoadedApk stubLoadedApk;
     private static LoadedApk appLoadedApk;
@@ -33,13 +40,18 @@ public class PatchMain {
 
     private static PackageManager pm;
 
-    public static void load() throws PackageManager.NameNotFoundException, JSONException, NoSuchMethodException {
+    public static void load() throws PackageManager.NameNotFoundException, JSONException {
+        archToLib.put("arm", "armeabi-v7a");
+        archToLib.put("arm64", "arm64-v8a");
+        archToLib.put("x86", "x86");
+        archToLib.put("x86_64", "x86_64");
+
         PineConfig.debug = false;
         PineConfig.debuggable = false;
+        PineConfig.disableHiddenApiPolicy = true;
+        PineConfig.disableHiddenApiPolicyForPlatformDomain = true;
 
-        Pine.ensureInitialized();
-        Log.d(TAG, "pine should be initialized");
-
+        HiddenApiBypass.addHiddenApiExemptions("");
         activityThread = ActivityThread.currentActivityThread();
         var context = createLoadedApkWithContext();
         if (context == null) {
@@ -49,6 +61,44 @@ public class PatchMain {
         pm = context.getPackageManager();
         var applicationInfo = pm.getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
         var config = new JSONObject(applicationInfo.metaData.getString("yapatch"));
+        PineConfig.libLoader = new Pine.LibLoader() {
+            @Override
+            public void loadLib() {
+                try {
+                    loadLibrary();
+                } catch (ClassNotFoundException | NoSuchMethodException |
+                         InvocationTargetException | IllegalAccessException |
+                         PackageManager.NameNotFoundException | JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            public void loadLibrary() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, PackageManager.NameNotFoundException, JSONException {
+                Class<?> VMRuntime = Class.forName("dalvik.system.VMRuntime");
+                Method getRuntime = VMRuntime.getDeclaredMethod("getRuntime");
+                getRuntime.setAccessible(true);
+                Method vmInstructionSet = VMRuntime.getDeclaredMethod("vmInstructionSet");
+                vmInstructionSet.setAccessible(true);
+                String arch = (String) vmInstructionSet.invoke(getRuntime.invoke(null));
+                String libName = archToLib.get(arch);
+                String sourceDir;
+                try {
+                   sourceDir = pm.getApplicationInfo(config.getString("manager"), 0).sourceDir;
+                } catch (PackageManager.NameNotFoundException e) {
+                    Log.e(TAG, "Manager not found: " + config.getString("manager"));
+                    Toast.makeText(context, "[YAPatch] Manager not found", Toast.LENGTH_LONG).show();
+                    throw e;
+                }
+                var pineSo = sourceDir + "!/assets/yapatch/" + libName + "/libpine.so";
+                try {
+                    System.load(pineSo);
+                } catch (UnsatisfiedLinkError e) {
+                    Log.e(TAG, "Failed to load libpine.so: " + e.getMessage());
+                    Toast.makeText(context, "[YAPatch] Unsupported " + libName, Toast.LENGTH_LONG).show();
+                    throw e;
+                }
+            }
+        };
 
         SigBypass.doSigBypass(context, config.getInt("sigbypassLevel"));
         var modules = Utils.fromJsonArray(config.getJSONArray("modules"));

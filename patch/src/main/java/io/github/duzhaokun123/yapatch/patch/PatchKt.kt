@@ -19,7 +19,6 @@ import java.io.File
 import java.io.FilenameFilter
 import java.security.KeyStore
 import java.security.cert.X509Certificate
-import kotlin.system.exitProcess
 
 
 class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
@@ -88,53 +87,13 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
             Versions.loader)))
         logger.info("Patched AndroidManifest.xml")
 
-        logger.info("Adding patch dex")
+        logger.info("Adding loader dex")
         val patchDex = File(tempDir, "classes${dexFileCount + 1}.dex")
         patchDex.createNewFile()
         this.javaClass.getResourceAsStream("/assets/yapatch/loader.dex")!!.use { input ->
             patchDex.outputStream().use { output ->
                 input.copyTo(output)
             }
-        }
-
-        logger.info("Checking support abis")
-        val abis = File(tempDir, "lib").listFiles()?.map { it.name } ?: emptyList()
-        logger.info("Found abis: $abis")
-        if (abis.isNotEmpty() && "arm64-v8a" !in abis) {
-            logger.error("Only support arm64-v8a abi now")
-            clean(tempDir)
-            throw RuntimeException("Only support arm64-v8a abi now")
-        }
-        val usedAbis = arrayOf("arm64-v8a")
-        val uselessAbis = abis - usedAbis
-        if (uselessAbis.isNotEmpty()) {
-            logger.info("Removing useless abis: $uselessAbis")
-            uselessAbis.forEach {
-                File(tempDir, "lib/$it").deleteRecursively()
-            }
-        }
-
-        logger.info("Adding .so file")
-        usedAbis.forEach { abi ->
-            val lsplantSoFile = File(tempDir, "lib/$abi/libpine.so")
-            lsplantSoFile.parentFile.mkdirs()
-            lsplantSoFile.createNewFile()
-            this.javaClass.getResourceAsStream("/assets/yapatch/pine/$abi/libpine.so")!!.use { input ->
-                lsplantSoFile.outputStream().use { output ->
-                    input.copyTo(output)
-                }
-            }
-            logger.info("Added $abi libpine.so")
-
-//            val yapatchSoFile = File(tempDir, "lib/$abi/libyapatch.so")
-//            yapatchSoFile.parentFile.mkdirs()
-//            yapatchSoFile.createNewFile()
-//            this.javaClass.getResourceAsStream("/yapatch/$abi/libyapatch.so")!!.use { input ->
-//                yapatchSoFile.outputStream().use { output ->
-//                    input.copyTo(output)
-//                }
-//            }
-//            logger.info("Added $abi libyapatch.so")
         }
         logger.info("Added")
 
