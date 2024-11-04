@@ -15,6 +15,7 @@ import io.github.duzhaokun123.yapatch.patch.utils.ManifestParser
 import net.lingala.zip4j.ZipFile
 import net.lingala.zip4j.model.ZipParameters
 import net.lingala.zip4j.model.enums.CompressionLevel
+import net.lingala.zip4j.progress.ProgressMonitor
 import java.io.File
 import java.io.FilenameFilter
 import java.security.KeyStore
@@ -81,7 +82,16 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
         tempDir.mkdirs()
 
         logger.info("Extracting apk to $tempDir")
-        ZipFile(srcApk).extractAll(tempDir.absolutePath)
+        val srcZipFile = ZipFile(srcApk)
+        srcZipFile.isRunInThread = true
+        val srcZipFileMonitor = srcZipFile.progressMonitor
+        srcZipFile.extractAll(tempDir.absolutePath)
+        while (srcZipFileMonitor.state != ProgressMonitor.State.READY) {
+            logger.onProgress(srcZipFileMonitor.percentDone, 100)
+            Thread.sleep(100)
+        }
+        logger.onProgress(srcZipFileMonitor.percentDone, 100)
+        logger.onProgress(0, 0)
         logger.info("Extracted")
 
         val dexFileCount = tempDir.listFiles(object : FilenameFilter {
@@ -122,11 +132,20 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
         logger.info("Repackaging apk")
         val tempApk = File(outputFile.parent, outputFile.nameWithoutExtension + "_temp.apk")
         tempApk.delete()
-        ZipFile(tempApk).addFolder(tempDir, ZipParameters().apply {
+        val tempZipFile = ZipFile(tempApk)
+        tempZipFile.isRunInThread = true
+        val tempZipFileMonitor = tempZipFile.progressMonitor
+        tempZipFile.addFolder(tempDir, ZipParameters().apply {
             isIncludeRootFolder = false
             compressionLevel = CompressionLevel.NO_COMPRESSION
-
         })
+        while (tempZipFileMonitor.state != ProgressMonitor.State.READY) {
+            logger.onProgress(tempZipFileMonitor.percentDone, 100)
+            Thread.sleep(100)
+        }
+        logger.onProgress(tempZipFileMonitor.percentDone, 100)
+        logger.onProgress(0, 0)
+        logger.info("Repackaged")
         val tempZFIle = ZFile.openReadOnly(tempApk)
         val dstZFile = ZFile.openReadWrite(outputFile, zFileOptions)
         tempZFIle.use {
@@ -134,7 +153,6 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
                 resign(tempZFIle, dstZFile)
             }
         }
-        logger.info("Repackaged")
 
         clean(tempDir, tempApk)
     }

@@ -18,6 +18,7 @@ import io.github.duzhaokun123.yapatch.patch.PatchKt
 import io.github.duzhaokun123.yapatch.patch.utils.Logger
 import io.github.duzhaokun123.yapatch.utils.runIO
 import io.github.duzhaokun123.yapatch.utils.runMain
+import io.github.duzhaokun123.yapatch.utils.runNewThread
 import java.io.File
 
 class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::class.java, Config.NO_BACK) {
@@ -98,7 +99,7 @@ class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::cl
     }
 
     override fun initData() {
-        runIO {
+        runNewThread {
             var ok = false
             try {
                 PatchKt(logger, *commandLine!!).run()

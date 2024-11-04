@@ -42,5 +42,7 @@ fun runMain(block: suspend CoroutineScope.() -> Unit) =
 fun runIO(block: suspend CoroutineScope.() -> Unit) =
     GlobalScope.launch(Dispatchers.IO, block = block)
 
+fun runNewThread(block: () -> Unit) = Thread(block).start()
+
 fun Resources.Theme.getAttr(@AttrRes id: Int) =
     TypedValue().apply { resolveAttribute(id, this, true) }
