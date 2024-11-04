@@ -74,7 +74,6 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
     }
 
     fun patch(srcApk: File, outputFile: File) {
-
         logger.info("PatchKt patch")
         outputFile.delete()
         val tempDir = File(outputFile.parent, "${srcApk.nameWithoutExtension}_temp")
@@ -181,19 +180,23 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
                 .setKey(entry.privateKey)
                 .build()
         ).register(dstZFile)
-        srcZFile.entries().forEach { entry ->
+        val entries = srcZFile.entries()
+        val total = entries.size
+        entries.forEachIndexed { i, entry ->
+            logger.onProgress(i + 1, total)
             val name = entry.centralDirectoryHeader.name
             if (name.startsWith("META-INF") && (name.endsWith(".SF") || name.endsWith(".MF") || name.endsWith(
                     ".RSA"
                 ))
-            ) return@forEach
+            ) return@forEachIndexed
             if (name == "resources.arsc" || name.endsWith(".so")) {
                 dstZFile.add(name, entry.open(), false)
-                return@forEach
+                return@forEachIndexed
             }
             dstZFile.add(name, entry.open())
         }
         dstZFile.realign()
+        logger.onProgress(0, 0)
         logger.info("Signed")
     }
 }

@@ -70,6 +70,14 @@ class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::cl
                 baseBinding.svLog.fullScroll(View.FOCUS_DOWN)
             }
         }
+
+        override fun onProgress(progress: Int, total: Int) {
+            runMain {
+                baseBinding.piProgress.isIndeterminate = total == 0
+                baseBinding.piProgress.max = total
+                baseBinding.piProgress.progress = progress
+            }
+        }
     }
 
     override fun initEvents() {

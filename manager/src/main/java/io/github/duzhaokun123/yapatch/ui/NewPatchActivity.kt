@@ -1,16 +1,13 @@
 package io.github.duzhaokun123.yapatch.ui
 
-import android.R
 import android.content.Context
 import android.content.Intent
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.duzhaokun123.yapatch.bases.BaseActivity
 import io.github.duzhaokun123.yapatch.bases.BaseSimpleAdapter
 import io.github.duzhaokun123.yapatch.databinding.ActivityNewPatchBinding
