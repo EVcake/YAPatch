@@ -76,7 +76,7 @@ class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::cl
             runMain {
                 baseBinding.piProgress.isIndeterminate = total == 0
                 baseBinding.piProgress.max = total
-                baseBinding.piProgress.progress = progress
+                baseBinding.piProgress.setProgress(progress, true)
             }
         }
     }
