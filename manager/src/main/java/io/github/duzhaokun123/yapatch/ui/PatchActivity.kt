@@ -74,9 +74,17 @@ class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::cl
 
         override fun onProgress(progress: Int, total: Int) {
             runMain {
-                baseBinding.piProgress.isIndeterminate = total == 0
-                baseBinding.piProgress.max = total
-                baseBinding.piProgress.setProgress(progress, true)
+                if (total != 0) {
+                    baseBinding.piProgress.isIndeterminate = false
+                    baseBinding.piProgress.max = total
+                    baseBinding.piProgress.setProgress(progress, true)
+                    setSubtitle("$progress/$total")
+                } else {
+                    baseBinding.piProgress.isIndeterminate = true
+                    baseBinding.piProgress.max = 100
+                    baseBinding.piProgress.progress = 0
+                    setSubtitle(null)
+                }
             }
         }
     }
