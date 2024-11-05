@@ -46,6 +46,20 @@ task("copyDex") {
     }
 }
 
+task("copySo") {
+    dependsOn("assembleRelease")
+
+    doLast {
+        val soOutPath = "$buildDir/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib"
+        val outPath = "${rootProject.projectDir}/manager/src/main/assets/yapatch"
+        copy {
+            from(soOutPath)
+            into(outPath)
+        }
+    }
+}
+
 task("copyFiles") {
     dependsOn("copyDex")
+    dependsOn("copySo")
 }
