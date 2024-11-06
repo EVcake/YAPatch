@@ -9,6 +9,7 @@ import com.google.gson.Gson
 import com.wind.meditor.core.ManifestEditor
 import com.wind.meditor.property.AttributeItem
 import com.wind.meditor.property.ModificationProperty
+import com.wind.meditor.utils.NodeValue
 import io.github.duzhaokun123.yapatch.patch.utils.ApkSignatureHelper
 import io.github.duzhaokun123.yapatch.patch.utils.Logger
 import io.github.duzhaokun123.yapatch.patch.utils.ManifestParser
@@ -160,6 +161,7 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
     fun patchManifest(manifestPath: String, metadata: String) {
         val modificationProperty = ModificationProperty()
         modificationProperty.addApplicationAttribute(AttributeItem("appComponentFactory", "io.github.duzhaokun123.yapatch.AppComponentFactory"))
+        modificationProperty.addApplicationAttribute(AttributeItem(NodeValue.Application.DEBUGGABLE, debuggable))
         modificationProperty.addMetaData(ModificationProperty.MetaData("yapatch", metadata))
         modificationProperty.addUsesPermission("android.permission.QUERY_ALL_PACKAGES")
         ManifestEditor(manifestPath, manifestPath + "_new", modificationProperty).processManifest()
@@ -203,10 +205,7 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
         entries.forEachIndexed { i, entry ->
             logger.onProgress(i + 1, total)
             val name = entry.centralDirectoryHeader.name
-            if (name.startsWith("META-INF") && (name.endsWith(".SF") || name.endsWith(".MF") || name.endsWith(
-                    ".RSA"
-                ))
-            ) return@forEachIndexed
+            if (name.startsWith("META-INF") && (name.endsWith(".SF") || name.endsWith(".MF") || name.endsWith(".RSA"))) return@forEachIndexed
             if (name == "resources.arsc" || name.endsWith(".so")) {
                 dstZFile.add(name, entry.open(), false)
                 return@forEachIndexed

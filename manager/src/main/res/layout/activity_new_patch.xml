@@ -61,6 +61,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/ll_signtureBypass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_modules"
@@ -79,6 +80,15 @@
             android:layout_height="wrap_content"
             android:entries="@array/signature_bypass" />
     </LinearLayout>
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/sw_debuggable"
+        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+        android:layout_marginTop="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_signtureBypass"
+        android:text="@string/debuggable" />
 
     <Button
         android:id="@+id/btn_patch"

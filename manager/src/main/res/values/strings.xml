@@ -17,4 +17,5 @@
     <string name="new_patch">new patch</string>
     <string name="signature_bypass_l0">lv 0: disabled</string>
     <string name="signature_bypass_l1">lv 1: pm bypass</string>
+    <string name="debuggable">debuggable</string>
 </resources>

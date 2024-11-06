@@ -107,6 +107,7 @@ class PatchActivity: BaseActivity<ActivityPatchBinding>(ActivityPatchBinding::cl
     }
 
     override fun initData() {
+        logger.info("commandLine: ${commandLine?.joinToString(" ")}")
         runNewThread {
             var ok = false
             try {

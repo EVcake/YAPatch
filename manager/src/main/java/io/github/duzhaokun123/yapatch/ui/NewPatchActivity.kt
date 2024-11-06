@@ -53,6 +53,9 @@ class NewPatchActivity: BaseActivity<ActivityNewPatchBinding>(ActivityNewPatchBi
             val commandLine = mutableListOf<String>()
             commandLine.add("-o")
             commandLine.add(cacheDir.absolutePath)
+            if (baseBinding.swDebuggable.isChecked) {
+                commandLine.add("-d")
+            }
             modules.forEach {
                 commandLine.add("-m")
                 commandLine.add(it)

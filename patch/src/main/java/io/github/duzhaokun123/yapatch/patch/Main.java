@@ -33,6 +33,9 @@ public class Main {
         @Parameter(names = {"-s", "--split"}, description = "Split apks")
         protected List<String> splitApks = new ArrayList<>();
 
+        @Parameter(names = {"-d", "--debuggable"}, description = "Set app to be debuggable")
+        protected boolean debuggable = false;
+
         @Parameter(names = {"-v", "--version"}, description = "Print version")
         protected boolean version = false;
 

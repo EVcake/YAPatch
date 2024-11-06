@@ -53,6 +53,7 @@ public class LoaderMain {
 
         HiddenApiBypass.addHiddenApiExemptions("");
         activityThread = ActivityThread.currentActivityThread();
+        Log.d(TAG, "load on: " + activityThread.getProcessName());
         var context = createLoadedApkWithContext();
         if (context == null) {
             Log.e(TAG, "Error when creating context");
