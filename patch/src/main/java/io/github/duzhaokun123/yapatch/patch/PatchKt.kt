@@ -112,12 +112,14 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
             throw RuntimeException("Parse AndroidManifest.xml failed")
         }
         val appComponentFactory = pair.appComponentFactory
+        val minSdkVersion = pair.minSdkVersion
         logger.info("AppComponentFactory: $appComponentFactory")
+        logger.info("MinSdkVersion: $minSdkVersion")
         val originalSignature = ApkSignatureHelper.getApkSignInfo(srcApk.absolutePath)
         logger.info("Original signature: $originalSignature")
         logger.info("Sigbypass level: $sigbypassLevel")
         patchManifest(manifestFile.absolutePath, gson.toJson(Metadata(appComponentFactory, modules, originalSignature, sigbypassLevel,
-            Versions.loader)))
+            Versions.loader)), minSdkVersion)
         logger.info("Patched AndroidManifest.xml")
 
         logger.info("Adding loader dex")
@@ -158,8 +160,10 @@ class PatchKt(logger: Logger, vararg args: String) : Main.Patch(logger, *args) {
         clean(tempDir, tempApk)
     }
 
-    fun patchManifest(manifestPath: String, metadata: String) {
+    fun patchManifest(manifestPath: String, metadata: String, minSdkVersion: Int) {
         val modificationProperty = ModificationProperty()
+        if (minSdkVersion < 33)
+            modificationProperty.addUsesSdkAttribute(AttributeItem(NodeValue.UsesSDK.MIN_SDK_VERSION, 33));
         modificationProperty.addApplicationAttribute(AttributeItem("appComponentFactory", "io.github.duzhaokun123.yapatch.AppComponentFactory"))
         modificationProperty.addApplicationAttribute(AttributeItem(NodeValue.Application.DEBUGGABLE, debuggable))
         modificationProperty.addMetaData(ModificationProperty.MetaData("yapatch", metadata))

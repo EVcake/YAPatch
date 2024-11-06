@@ -7,13 +7,11 @@ import android.content.pm.PackageParser;
 import android.content.pm.Signature;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Base64;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 

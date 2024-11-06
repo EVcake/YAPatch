@@ -33,8 +33,6 @@ public class LoaderMain {
     static String TAG = "YAPatch";
     private static final Map<String, String> archToLib = new HashMap<>(4);
 
-
-    private static LoadedApk stubLoadedApk;
     private static LoadedApk appLoadedApk;
     private static ActivityThread activityThread;
 
@@ -103,8 +101,8 @@ public class LoaderMain {
         };
 
         SigBypass.doSigBypass(context, config.getInt("sigbypassLevel"));
-        var modules = Utils.fromJsonArray(config.getJSONArray("modules"));
 
+        var modules = Utils.fromJsonArray(config.getJSONArray("modules"));
         if (modules.length == 0) {
             Log.w(TAG, "No module to load");
             return;
@@ -132,39 +130,9 @@ public class LoaderMain {
     private static Context createLoadedApkWithContext() {
         try {
             var mBoundApplication = XposedHelpers.getObjectField(activityThread, "mBoundApplication");
-
-            stubLoadedApk = (LoadedApk) XposedHelpers.getObjectField(mBoundApplication, "info");
-            var appInfo = (ApplicationInfo) XposedHelpers.getObjectField(mBoundApplication, "appInfo");
-            var compatInfo = (CompatibilityInfo) XposedHelpers.getObjectField(mBoundApplication, "compatInfo");
-
-            var mPackages = (Map<?, ?>) XposedHelpers.getObjectField(activityThread, "mPackages");
-            mPackages.remove(appInfo.packageName);
-            appLoadedApk = activityThread.getPackageInfoNoCheck(appInfo, compatInfo);
-            XposedHelpers.setObjectField(mBoundApplication, "info", appLoadedApk);
-
-            var activityClientRecordClass = XposedHelpers.findClass("android.app.ActivityThread$ActivityClientRecord", ActivityThread.class.getClassLoader());
-            var fixActivityClientRecord = (BiConsumer<Object, Object>) (k, v) -> {
-                if (activityClientRecordClass.isInstance(v)) {
-                    var pkgInfo = XposedHelpers.getObjectField(v, "packageInfo");
-                    if (pkgInfo == stubLoadedApk) {
-                        Log.d(TAG, "fix loadedapk from ActivityClientRecord");
-                        XposedHelpers.setObjectField(v, "packageInfo", appLoadedApk);
-                    }
-                }
-            };
-            var mActivities = (Map<?, ?>) XposedHelpers.getObjectField(activityThread, "mActivities");
-            mActivities.forEach(fixActivityClientRecord);
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    var mLaunchingActivities = (Map<?, ?>) XposedHelpers.getObjectField(activityThread, "mLaunchingActivities");
-                    mLaunchingActivities.forEach(fixActivityClientRecord);
-                }
-            } catch (Throwable ignored) {
-            }
+            appLoadedApk = (LoadedApk) XposedHelpers.getObjectField(mBoundApplication, "info");
             Log.i(TAG, "hooked app initialized: " + appLoadedApk);
-
-            var context = (Context) XposedHelpers.callStaticMethod(Class.forName("android.app.ContextImpl"), "createAppContext", activityThread, stubLoadedApk);
-            return context;
+            return (Context) XposedHelpers.callStaticMethod(Class.forName("android.app.ContextImpl"), "createAppContext", activityThread, appLoadedApk);
         } catch (Throwable e) {
             Log.e(TAG, "createLoadedApk", e);
             return null;
