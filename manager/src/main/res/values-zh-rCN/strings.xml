@@ -17,4 +17,6 @@
     <string name="new_patch">新修补</string>
     <string name="signature_bypass_l0">lv 0: 禁用</string>
     <string name="signature_bypass_l1">lv 1: pm 绕过</string>
+    <string name="debuggable">可调式</string>
+    <string name="donate">捐赠</string>
 </resources>

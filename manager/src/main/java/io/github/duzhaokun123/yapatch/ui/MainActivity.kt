@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.duzhaokun123.yapatch.BuildConfig
@@ -63,7 +64,9 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
                             |PineXposed Version: ${Versions.pineXposed}
                         """.trimMargin()
                     )
-                    .setPositiveButton(android.R.string.ok, null)
+                    .setPositiveButton(R.string.donate) { _, _  ->
+                        startActivity(Intent(Intent.ACTION_VIEW, "https://duzhaokun123.github.io/donate/".toUri()))
+                    }
                     .show()
                 true
             }

@@ -42,7 +42,7 @@ task("copyDex") {
             rename("classes.dex", "loader.dex")
             into(outPath)
         }
-        println("Patch dex has been copied to $outPath")
+        println("loader dex has been copied to $outPath")
     }
 }
 
@@ -56,6 +56,7 @@ task("copySo") {
             from(soOutPath)
             into(outPath)
         }
+        println("loader so has been copied to $outPath")
     }
 }
 
