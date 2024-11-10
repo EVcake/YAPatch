@@ -28,6 +28,7 @@ class NewPatchActivity: BaseActivity<ActivityNewPatchBinding>(ActivityNewPatchBi
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         result.data?.getStringExtra("module")?.let {
+            if (it in modules) return@registerForActivityResult
             modules.add(it)
             baseBinding.rvModules.adapter?.notifyItemInserted(modules.size - 1)
         }
