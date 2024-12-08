@@ -29,5 +29,6 @@ use https://github.com/Reginer/aosp-android-jar/tree/main/android-35 android.jar
 
 ## 主要感谢
 - [Pine](https://github.com/canyie/pine)
-- [LSPatch](https://github.com/LSPosed/LSPatch)
 - [Xpatch](https://github.com/WindySha/Xpatch)
+- [LSPatch](https://github.com/LSPosed/LSPatch)
+- [YAPatch](https://github.com/duzhaokun123/YAPatch)
