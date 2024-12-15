@@ -1,30 +1,36 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    id("java-library")
+    alias(libs.plugins.java.library)
     alias(libs.plugins.kotlin.jvm)
-    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
+
+val defaultManagerPackageName: String by rootProject.extra
+val androidSourceCompatibility: JavaVersion by rootProject.extra
+val androidTargetCompatibility: JavaVersion by rootProject.extra
+val androidJvmTarget: JvmTarget by rootProject.extra
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-}
-
-tasks.jar {
-    manifest.attributes["Main-Class"] = "io.github.duzhaokun123.yapatch.patch.Main"
+    sourceCompatibility = androidSourceCompatibility
+    targetCompatibility = androidTargetCompatibility
+    sourceSets {
+        main {
+            java.srcDirs("libs/manifest-editor/lib/src/main/java")
+            resources.srcDirs("libs/manifest-editor/lib/src/main")
+        }
+    }
 }
 
 kotlin {
     compilerOptions {
-        jvmTarget = JvmTarget.JVM_11
+        jvmTarget = androidJvmTarget
     }
 }
 
 dependencies {
-    implementation(libs.beust.jcommander)
-    implementation(libs.zip4j)
-    implementation("com.android.tools.build:apkzlib:8.7.1")
-    implementation(libs.gson)
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    implementation(libs.gson)
+    implementation(libs.zip4j)
+    implementation(libs.apkzlib)
+    implementation(libs.beust.jcommander)
 }

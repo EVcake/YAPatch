@@ -1,28 +1,58 @@
 [versions]
 activityKtx = "1.9.3"
-agp = "8.7.1"
-gson = "2.11.0"
-kotlin = "2.0.21"
-coreKtx = "1.13.1"
 appcompat = "1.7.0"
+runtime = "1.7.6"
+coreKtx = "1.15.0"
+
 material = "1.12.0"
-beust-jcommander = "1.82"
-viewbindingutil = "0.1"
+auto-value = "1.11.0"
+gson = "2.11.0"
 zip4j = "2.11.5"
+hiddenapibypass = "4.3"
+
+apkzlib = "8.7.3"
+orgEclipseJgit = "6.6.1.202309021850-r"
+
+beust-jcommander = "1.82"
+matsudamper-viewbindingutil = "0.1"
+xposed-api = "82"
+pine-core = "0.3.0"
+pine-xposed = "0.2.0"
+
+agp = "8.7.3"
+compose = "1.8.0-alpha01"
+kotlin = "2.0.21"
+johnrengelman = "8.1.1"
 
 [libraries]
-androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+
+androidx-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+
+material = { module = "com.google.android.material:material", version.ref = "material" }
+auto-value = { module = "com.google.auto.value:auto-value", version.ref = "auto-value" }
+auto-value-annotations = { module = "com.google.auto.value:auto-value-annotations", version.ref = "auto-value" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-beust-jcommander = { module = "com.beust:jcommander", version.ref = "beust-jcommander" }
-viewbindingutil = { module = "com.github.matsudamper:ViewBindingUtil", version.ref = "viewbindingutil" }
 zip4j = { module = "net.lingala.zip4j:zip4j", version.ref = "zip4j" }
-xposed = { module = "de.robv.android.xposed:api", version = "82" }
+hiddenapibypass = { module = "org.lsposed.hiddenapibypass:hiddenapibypass", version.ref = "hiddenapibypass" }
+
+apkzlib = { module = "com.android.tools.build:apkzlib", version.ref = "apkzlib" }
+org-eclipse-jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "orgEclipseJgit" }
+
+beust-jcommander = { module = "com.beust:jcommander", version.ref = "beust-jcommander" }
+matsudamper-viewbindingutil = { module = "com.github.matsudamper:ViewBindingUtil", version.ref = "matsudamper-viewbindingutil" }
+xposed-api = { module = "de.robv.android.xposed:api", version = "xposed-api" }
+pine-core = { module = "top.canyie.pine:core", version.ref = "pine-core" }
+pine-xposed = { module = "top.canyie.pine:xposed", version.ref = "pine-xposed" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-plugin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+johnrengelman = { id = "com.github.johnrengelman.shadow", version.ref = "johnrengelman"}
+java-library = { id = "java-library" }

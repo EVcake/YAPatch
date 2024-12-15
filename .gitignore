@@ -2,7 +2,9 @@
 /.gradle
 /.kotlin
 /build
+/*/build
 /captures
+/out
 .DS_Store
 .cxx
 .externalNativeBuild
