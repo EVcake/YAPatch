@@ -1,0 +1,3 @@
+[submodule "patch/libs/manifest-editor"]
+	path = patch/libs/manifest-editor
+	url = https://github.com/WindySha/ManifestEditor.git
