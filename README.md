@@ -3,9 +3,6 @@
 Yet Another Patching Tool for Android to load xposed modules
 
 ## Build
-
-use https://github.com/Reginer/aosp-android-jar/tree/main/android-35 android.jar
-
 ```shell
 ./gradlew buildAll
 ```

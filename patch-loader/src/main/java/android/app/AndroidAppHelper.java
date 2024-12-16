@@ -2,6 +2,7 @@ package android.app;
 
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+
 import android.content.res.CompatibilityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -102,9 +103,18 @@ public final class AndroidAppHelper {
 	}
 
 	/* For SDK 24+ */
-	private static Object createResourcesKey(String resDir, String[] splitResDirs, String[] overlayDirs, String[] libDirs, int displayId, Configuration overrideConfiguration, CompatibilityInfo compatInfo) {
+	/***
+	 *
+	 * @param resDir
+	 * @param displayId
+	 * @param overrideConfiguration
+	 * @param compatInfo
+	 * @param args String[] splitResDirs, String[] overlayDirs, String[] libDirs
+	 * @return
+	 */
+	private static Object createResourcesKey(String resDir, int displayId, Configuration overrideConfiguration, CompatibilityInfo compatInfo, Object... args) {
 		try {
-			return newInstance(CLASS_RESOURCES_KEY, resDir, splitResDirs, overlayDirs, libDirs, displayId, overrideConfiguration, compatInfo);
+			return newInstance(CLASS_RESOURCES_KEY, resDir, displayId, overrideConfiguration, compatInfo, args);
 		} catch (Throwable t) {
 			XposedBridge.log(t);
 			return null;
@@ -127,7 +137,7 @@ public final class AndroidAppHelper {
 		if (Build.VERSION.SDK_INT >= 24) {
 			CompatibilityInfo compatInfo = (CompatibilityInfo) newInstance(CompatibilityInfo.class);
 			setFloatField(compatInfo, "applicationScale", resources.hashCode());
-			resourcesKey = createResourcesKey(resDir, null, null, null, Display.DEFAULT_DISPLAY, null, compatInfo);
+			resourcesKey = createResourcesKey(resDir, Display.DEFAULT_DISPLAY, null, compatInfo, null, null, null);
 		} else if (Build.VERSION.SDK_INT == 23) {
 			resourcesKey = createResourcesKey(resDir, Display.DEFAULT_DISPLAY, null, resources.hashCode());
 		} else if (Build.VERSION.SDK_INT >= 19) {
